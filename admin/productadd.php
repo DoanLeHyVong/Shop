@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
 }
 ?>
 
-
+<link rel="stylesheet" href="../admin/css/style.css">
 <div class="grid_10">
     <div class="box round first grid">
         <h2>Add New Product</h2>
@@ -112,18 +112,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
                             <label>Product Type</label>
                         </td>
                         <td>
-                            <select id="select" name="type">
-                                <option>Select Type</option>
-                                <option value="1">Featured</option>
-                                <option value="0">Non-Featured</option>
-                            </select>
+                            <input type="radio" name="type" value="0"
+                                <?php if(isset($result['type']) && $result['type'] == 0) echo "checked"; ?>>Feathered
+                            <input type="radio" name="type" value="1"
+                                <?php if(isset($result['type']) && $result['type'] == 1) echo "checked"; ?>>Non-Feathered
                         </td>
                     </tr>
-
                     <tr>
-                        <td></td>
                         <td>
-                            <input type="submit" name="submit" Value="Save" />
+                            <label>Quantity</label>
+                        </td>
+                        <td>
+                            <input type="text" name="quantity" placeholder="Enter Quantity..." class="medium" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="submit" name="submit" value="Save" class="save-button">
                         </td>
                     </tr>
                 </table>

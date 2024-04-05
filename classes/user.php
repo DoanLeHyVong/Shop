@@ -7,7 +7,7 @@ include_once($filepath . "/../helpers/format.php");
 <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
 <?php
-class Product{
+class User{
    private $db;
    private $fm;
    public function __construct()
@@ -22,7 +22,6 @@ class Product{
     $product_desc = mysqli_real_escape_string($this->db->link, $data['product_desc']);
     $price = mysqli_real_escape_string($this->db->link, $data['price']);
     $type = mysqli_real_escape_string($this->db->link, $data['type']);
-    $quantity = mysqli_real_escape_string($this->db->link, $data['quantity']);
 
     $permited = array('jpg', 'jpeg', 'png', 'gif');
     $file_name = $_FILES['image']['name'];
@@ -33,27 +32,24 @@ class Product{
     $unique_image = substr(md5(time()), 0, 10) . '.' . $file_ext;
     $uploaded_image = "uploads/" . $unique_image;
     
-// ai lai xu li $type the nay. empty no nhan 0 la rong tra ve true dung roi
-    if(empty($productName) || empty($brand) || empty($category) || empty($product_desc) || empty($price) || 
-    empty($file_name) ||empty($quantity)) {
-        $alert = "<script>toastr.error('Fields must not be empty');</script>";
-        return $alert;
-    } else if( $type != 0 && $type != 1 ) {
-        $alert = "<script>toastr.error('Invalid type');</script>";
-        return $alert;
-    } else {
-        move_uploaded_file($file_temp, $uploaded_image);
-        $query = "INSERT INTO tbl_product(productName, brandId, catId, product_desc, price, type, image,quantity) VALUES ('$productName', 
-        '$brand', '$category', '$product_desc', '$price', $type, '$unique_image','$quantity')"; // Loại bỏ dấu nháy xung quanh $type
-        $result = $this->db->insert($query);
-        if($result) {
-            $alert = "<script>toastr.success('Insert Product Successfully');</script>";
-            return $alert;
-        } else {
-            $alert = "<script>toastr.error('Insert Product Not Success');</script>";
-            return $alert;
-        }
-    }
+
+    if(empty($productName) || empty($brand) || empty($category) || empty($product_desc) || empty($price) || empty($type) || 
+    empty($file_name)) {
+      $alert = "<script>toastr.error('Fields  must not be empty');</script>";
+      return $alert;
+  } else {
+      move_uploaded_file($file_temp, $uploaded_image);
+      $query = "INSERT INTO tbl_product(productName, brandId, catId, product_desc, price, type, image) VALUES ('$productName', 
+      '$brand', '$category', '$product_desc', '$price', '$type', '$unique_image')";
+      $result = $this->db->insert($query);
+      if($result) {
+          $alert = "<script>toastr.success('Insert Product Successfully');</script>";
+          return $alert;
+      } else {
+          $alert = "<script>toastr.error('Insert Product Not Success');</script>";
+          return $alert;
+      }
+  }
 }
     
 public function getProducts() {
@@ -61,13 +57,12 @@ public function getProducts() {
     FROM tbl_product p
     INNER JOIN tbl_category c ON p.catId = c.catId
     INNER JOIN tbl_brand b ON p.brandId = b.brandId
-    ORDER BY p.productId ASC" ; // Sắp xếp theo ID tăng dần
+    " ;
     $result = $this->db->select($sql);
     return $result;
 }
 
-
-public function update_product($productName, $categoryId, $brandId, $productDesc, $type, $price, $id,$quantity) {
+public function update_product($productName, $categoryId, $brandId, $productDesc, $type, $price, $id) {
     // Validate and sanitize input data
     $productName = $this->fm->validation($productName);
     $productName = mysqli_real_escape_string($this->db->link, $productName);
@@ -78,8 +73,6 @@ public function update_product($productName, $categoryId, $brandId, $productDesc
     $type = mysqli_real_escape_string($this->db->link, $type);
     $price = mysqli_real_escape_string($this->db->link, $price);
     $id = mysqli_real_escape_string($this->db->link, $id);
-    $quantity = mysqli_real_escape_string($this->db->link, $quantity);
-
 
     // Check if productName is empty
     if(empty($productName)) {
@@ -87,7 +80,7 @@ public function update_product($productName, $categoryId, $brandId, $productDesc
         return $alert;
     } else {
         // Update the product in the database
-        $query = "UPDATE tbl_product SET productName = '$productName', catId = '$categoryId', brandId = '$brandId', product_desc = '$productDesc', type = '$type', price = '$price',quantity='$quantity' WHERE productId = '$id'";
+        $query = "UPDATE tbl_product SET productName = '$productName', catId = '$categoryId', brandId = '$brandId', product_desc = '$productDesc', type = '$type', price = '$price' WHERE productId = '$id'";
         $result = $this->db->update($query);
         if($result) {
             $alert = "<script>toastr.success('Product Updated Successfully', '', { onHidden: function() { window.location = 'productlist.php'; } });</script>";
@@ -118,27 +111,5 @@ public function del_product($id) {
         return $alert;
     }
 }
-
-        #USER
-        public function getproduct_feathered() {
-            $query = "SELECT * FROM tbl_product WHERE type = '0'";
-            $result = $this->db->select($query);
-            return $result;
-        }
-        public function getproduct_new() {
-            $query = "SELECT * FROM tbl_product ORDER BY productId DESC LIMIT 4";
-            $result = $this->db->select($query);
-            return $result;
-        }
-        public function get_details($id) {
-            $sql = "SELECT p.*, c.catName, b.brandName
-                    FROM tbl_product p
-                    INNER JOIN tbl_category c ON p.catId = c.catId
-                    INNER JOIN tbl_brand b ON p.brandId = b.brandId
-                    WHERE p.productId ='$id'";
-            $result = $this->db->select($sql);
-            return $result;
-        }
-        
 }
 ?>

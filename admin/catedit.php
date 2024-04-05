@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 ?>
-
+<link rel="stylesheet" href="../admin/css/style.css">
 <div class="grid_10">
     <div class="box round first grid">
         <h2>Sửa danh mục</h2>

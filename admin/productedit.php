@@ -24,13 +24,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $productDesc = $_POST['productDesc'];
     $type = $_POST['type'];
     $price = $_POST['price'];
+    $quantity = $_POST['quantity'];
+
     
     // Gọi phương thức update_product từ đối tượng $product để cập nhật sản phẩm
-    $updateProduct = $product->update_product($productName, $categoryId, $brandId, $productDesc, $type, $price, $id);
+    $updateProduct = $product->update_product($productName, $categoryId, $brandId, $productDesc, $type, $price, $id,$quantity);
 }
 
 ?>
-
+<link rel="stylesheet" href="../admin/css/style.css">
 <div class="grid_10">
     <div class="box round first grid">
         <h2>Chỉnh sửa sản phẩm</h2>
@@ -137,7 +139,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         </td>
                     </tr>
                     <tr>
-                        <td></td>
+                        <td>
+                            <label>Số Lượng:</label>
+                        </td>
+                        <td>
+                            <input type="text" value="<?php echo $result['quantity'] ?>" name="quantity"
+                                placeholder="Nhập số lượng sản phẩm..." class="medium" />
+                        </td>
+                    </tr>
+                    <tr>
                         <td>
                             <input type="submit" name="submit" Value="Cập nhật" />
                         </td>

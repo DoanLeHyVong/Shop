@@ -9,7 +9,7 @@
      $insertBrand = $brand->insert_brand($brandName) ;
   }
 ?>
-
+<link rel="stylesheet" href="../admin/css/style.css">
 <div class="grid_10">
     <div class="box round first grid">
         <h2>Add New Brand</h2>
@@ -28,7 +28,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="submit" name="submit" Value="Save" />
+                            <input type="submit" name="submit" value="Save" class="save-button">
                         </td>
                     </tr>
                 </table>

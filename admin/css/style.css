@@ -4,7 +4,7 @@ body {
 }
 
 .grid_10 {
-  width: 80%;
+  width: 100%;
   margin: 0 auto;
   padding-top: 20px;
 }
@@ -14,6 +14,8 @@ body {
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-left: 250px;
+  margin-top: 50px;
 }
 
 .block {
@@ -80,4 +82,34 @@ table th {
 
 .add-brand:hover {
   background-color: #45a049;
+}
+#layoutSidenav {
+  display: flex;
+  overflow: hidden;
+}
+
+#layoutSidenav_nav {
+  flex: 0 0 250px; /* Độ rộng cố định cho sidebar */
+  overflow-y: auto;
+}
+
+#layoutSidenav_content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+/* styles.css */
+.save-button {
+  background-color: #4caf50; /* Màu xanh lá cây */
+  color: white; /* Màu chữ trắng */
+  padding: 10px 20px; /* Kích thước nút */
+  border: none; /* Loại bỏ đường viền */
+  border-radius: 5px; /* Bo góc */
+  cursor: pointer; /* Hiệu ứng khi di chuột */
+  text-align: center; /* Căn giữa nội dung nút */
+  text-decoration: none; /* Loại bỏ gạch chân */
+  display: inline-block; /* Hiển thị như block */
+  font-size: 16px; /* Kích thước chữ */
+  margin: 4px 2px; /* Khoảng cách xung quanh nút */
+  transition-duration: 0.4s; /* Hiệu ứng chuyển đổi */
 }

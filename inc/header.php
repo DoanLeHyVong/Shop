@@ -1,3 +1,32 @@
+<?php 
+    include_once('lib/session.php');
+    Session::init();
+    include_once("lib/database.php");
+    include_once("helpers/format.php");
+
+?>
+
+<?php
+spl_autoload_register(function($className) {
+    include_once "classes/".$className.".php";
+});
+
+$db = new Database();
+$fm = new Format();
+$ct = new Cart();
+$us = new User();
+$cat = new Category();
+$product = new Product();
+?>
+
+<?php
+// Set no cache headers
+header("Cache-Control: no-cache, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: " . gmdate("D, d M Y H:i:s", strtotime("5 April 2024")) . " GMT"); // Sử dụng ngày giờ hiện tại
+header("Cache-Control: max-age=2592000");
+?>
+
 <!DOCTYPE HTML>
 
 <head>

@@ -18,7 +18,7 @@ if(isset($_GET['delid'])) {
 <link rel="stylesheet" href="../admin/css/style.css">
 <div class="grid_10">
     <div class="box round first grid">
-        <h2>Post List</h2>
+        <h2>Product List</h2>
         <div class="block">
             <?php
             if(isset($delProduct)){
@@ -26,6 +26,7 @@ if(isset($_GET['delid'])) {
             }
             ?>
             <table class="data display datatable" id="example">
+                <button class="add-category" onclick="window.location.href='productadd.php'">Add Product</button>
                 <thead>
                     <tr>
                         <th>Product ID</th>
@@ -35,6 +36,7 @@ if(isset($_GET['delid'])) {
                         <th>Description</th>
                         <th>Type</th>
                         <th>Price</th>
+                        <th>Quantity</th>
                         <th>Image</th>
                         <th>Action</th>
                     </tr>
@@ -58,6 +60,7 @@ if(isset($_GET['delid'])) {
                         <td><?php echo $result['price']; ?></td>
                         <td class="image-cell"><img src="uploads/<?php echo $result['image'] ?>" width="200"
                                 height="200"></td>
+                        <td><?php echo $result['quantity']; ?></td>
                         <td class="action-links">
                             <a href="productedit.php?productid=<?php echo $result['productId']; ?>">Edit</a> ||
                             <a onclick="return confirm('Are you sure you want to delete?')"

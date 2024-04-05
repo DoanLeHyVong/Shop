@@ -3,6 +3,7 @@
 	include 'inc/slider.php';
 ?>
 <div class="main">
+    <link rel="stylesheet" href="assets/css/style.css">
     <div class="content">
         <div class="content_top">
             <div class="heading">
@@ -11,34 +12,25 @@
             <div class="clear"></div>
         </div>
         <div class="section group">
+            <?php
+                $product_feathered = $product->getproduct_feathered();
+                if ($product_feathered) {
+                    while ($result = $product_feathered->fetch_assoc()) {
+            ?>
             <div class="grid_1_of_4 images_1_of_4">
-                <a href="details.php"><img src="assets/images/feature-pic1.png" alt="" /></a>
-                <h2>Lorem Ipsum is simply </h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit</p>
-                <p><span class="price">$505.22</span></p>
-                <div class="button"><span><a href="details.php" class="details">Details</a></span></div>
+                <a href="details.php?productid=<?php echo $result['productId']; ?>">
+                    <img src="admin/uploads/<?php echo $result['image']; ?>" alt="" width="100" height="100">
+                </a>
+                <h2><?php echo $result['productName'] ?></h2>
+                <p><?php echo $fm->textShorten($result['product_desc'], 30) ?></p>
+                <p><span class="price"><?php echo $result['price'] . "VND" ?></span></p>
+                <div class="button"><span><a href="details.php?productid=<?php echo $result['productId']; ?>"
+                            class="details">Details</a></span></div>
             </div>
-            <div class="grid_1_of_4 images_1_of_4">
-                <a href="details.php"><img src="assets/images/feature-pic2.jpg" alt="" /></a>
-                <h2>Lorem Ipsum is simply </h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit</p>
-                <p><span class="price">$620.87</span></p>
-                <div class="button"><span><a href="details.php" class="details">Details</a></span></div>
-            </div>
-            <div class="grid_1_of_4 images_1_of_4">
-                <a href="details.php"><img src="assets/images/feature-pic3.jpg" alt="" /></a>
-                <h2>Lorem Ipsum is simply </h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit</p>
-                <p><span class="price">$220.97</span></p>
-                <div class="button"><span><a href="details.php" class="details">Details</a></span></div>
-            </div>
-            <div class="grid_1_of_4 images_1_of_4">
-                <img src="assets/images/feature-pic4.png" alt="" />
-                <h2>Lorem Ipsum is simply </h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit</p>
-                <p><span class="price">$415.54</span></p>
-                <div class="button"><span><a href="details.php" class="details">Details</a></span></div>
-            </div>
+            <?php
+            }
+        }
+        ?>
         </div>
         <div class="content_bottom">
             <div class="heading">
@@ -47,33 +39,28 @@
             <div class="clear"></div>
         </div>
         <div class="section group">
+            <?php
+                $product_feathered = $product->getproduct_new();
+                if ($product_feathered) {
+                    while ($result = $product_feathered->fetch_assoc()) {
+            ?>
             <div class="grid_1_of_4 images_1_of_4">
-                <a href="details.php"><img src="assets/images/new-pic1.jpg" alt="" /></a>
-                <h2>Lorem Ipsum is simply </h2>
-                <p><span class="price">$403.66</span></p>
-                <div class="button"><span><a href="details.php" class="details">Details</a></span></div>
+                <a href="details.php?productid=<?php echo $result['productId']; ?>">
+                    <img src="admin/uploads/<?php echo $result['image']; ?>" alt="" width="100" height="100">
+                </a>
+                <h2><?php echo $result['productName'] ?></h2>
+                <p><?php echo $fm->textShorten($result['product_desc'], 50) ?></p>
+                <p><span class="price"><?php echo $result['price'] . "VND" ?></span></p>
+                <div class="button"><span><a href="details.php?productid=<?php echo $result['productId']; ?>"
+                            class="details">Details</a></span></div>
             </div>
-            <div class="grid_1_of_4 images_1_of_4">
-                <a href="details.php"><img src="assets/images/new-pic2.jpg" alt="" /></a>
-                <h2>Lorem Ipsum is simply </h2>
-                <p><span class="price">$621.75</span></p>
-                <div class="button"><span><a href="details.php" class="details">Details</a></span></div>
-            </div>
-            <div class="grid_1_of_4 images_1_of_4">
-                <a href="details.php"><img src="assets/images/feature-pic2.jpg" alt="" /></a>
-                <h2>Lorem Ipsum is simply </h2>
-                <p><span class="price">$428.02</span></p>
-                <div class="button"><span><a href="details.php" class="details">Details</a></span></div>
-            </div>
-            <div class="grid_1_of_4 images_1_of_4">
-                <img src="assets/images/new-pic3.jpg" alt="" />
-                <h2>Lorem Ipsum is simply </h2>
-                <p><span class="price">$457.88</span></p>
-
-                <div class="button"><span><a href="details.php" class="details">Details</a></span></div>
-            </div>
+            <?php
+            }
+        }
+        ?>
         </div>
     </div>
+</div>
 </div>
 <?php
 	include 'inc/footer.php';

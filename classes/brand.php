@@ -1,6 +1,8 @@
 <?php
-include_once "../lib/database.php";
-include_once "../helpers/format.php";
+$filepath = realpath(dirname(__FILE__));
+include_once($filepath . "/../lib/database.php");
+include_once($filepath . "/../helpers/format.php");
+
 ?>
 <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />
