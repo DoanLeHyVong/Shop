@@ -31,7 +31,7 @@ class Product{
     $div = explode('.', $file_name);
     $file_ext = strtolower(end($div));
     $unique_image = substr(md5(time()), 0, 10) . '.' . $file_ext;
-    $uploaded_image = "uploads/" . $unique_image;
+    $uploaded_image = "admin/uploads/" . $unique_image;
     
 // ai lai xu li $type the nay. empty no nhan 0 la rong tra ve true dung roi
     if(empty($productName) || empty($brand) || empty($category) || empty($product_desc) || empty($price) || 
@@ -67,7 +67,7 @@ public function getProducts() {
 }
 
 
-public function update_product($productName, $categoryId, $brandId, $productDesc, $type, $price, $id,$quantity) {
+public function update_product($productName, $categoryId, $brandId, $productDesc, $type, $price, $id, $quantity, $image) {
     // Validate and sanitize input data
     $productName = $this->fm->validation($productName);
     $productName = mysqli_real_escape_string($this->db->link, $productName);
@@ -80,24 +80,59 @@ public function update_product($productName, $categoryId, $brandId, $productDesc
     $id = mysqli_real_escape_string($this->db->link, $id);
     $quantity = mysqli_real_escape_string($this->db->link, $quantity);
 
-
     // Check if productName is empty
-    if(empty($productName)) {
+    if (empty($productName)) {
         $alert = "<script>toastr.error('Product name must not be empty');</script>";
         return $alert;
     } else {
-        // Update the product in the database
-        $query = "UPDATE tbl_product SET productName = '$productName', catId = '$categoryId', brandId = '$brandId', product_desc = '$productDesc', type = '$type', price = '$price',quantity='$quantity' WHERE productId = '$id'";
-        $result = $this->db->update($query);
-        if($result) {
-            $alert = "<script>toastr.success('Product Updated Successfully', '', { onHidden: function() { window.location = 'productlist.php'; } });</script>";
-            return $alert;
+        // Check if a new image is uploaded
+        if ($_FILES['image']['name']) {
+            // Upload new image
+            $permited = array('jpg', 'jpeg', 'png', 'gif');
+            $file_name = $_FILES['image']['name'];
+            $file_size = $_FILES['image']['size'];
+            $file_temp = $_FILES['image']['tmp_name'];
+
+            $div = explode('.', $file_name);
+            $file_ext = strtolower(end($div));
+            $unique_image = substr(md5(time()), 0, 10) . '.' . $file_ext;
+            $uploaded_image = "admin/uploads/" . $unique_image;
+
+            if ($file_size > 1048567) {
+                $alert = "<script>toastr.error('Image Size should be less than 1MB');</script>";
+                return $alert;
+            } elseif (in_array($file_ext, $permited) === false) {
+                $alert = "<script>toastr.error('You can upload only:-" . implode(', ', $permited) . "');</script>";
+                return $alert;
+            } else {
+                move_uploaded_file($file_temp, $uploaded_image);
+
+                // Update the product with the new image
+                $query = "UPDATE tbl_product SET productName = '$productName', catId = '$categoryId', brandId = '$brandId', product_desc = '$productDesc', type = '$type', price = '$price', quantity='$quantity', image = '$unique_image' WHERE productId = '$id'";
+                $result = $this->db->update($query);
+                if ($result) {
+                    $alert = "<script>toastr.success('Product Updated Successfully', '', { onHidden: function() { window.location = 'productlist.php'; } });</script>";
+                    return $alert;
+                } else {
+                    $alert = "<script>toastr.error('Product Update Not Successful');</script>";
+                    return $alert;
+                }
+            }
         } else {
-            $alert = "<script>toastr.error('Product Update Not Successful');</script>";
-            return $alert;
+            // Update the product without changing the image
+            $query = "UPDATE tbl_product SET productName = '$productName', catId = '$categoryId', brandId = '$brandId', product_desc = '$productDesc', type = '$type', price = '$price', quantity='$quantity' WHERE productId = '$id'";
+            $result = $this->db->update($query);
+            if ($result) {
+                $alert = "<script>toastr.success('Product Updated Successfully', '', { onHidden: function() { window.location = 'productlist.php'; } });</script>";
+                return $alert;
+            } else {
+                $alert = "<script>toastr.error('Product Update Not Successful');</script>";
+                return $alert;
+            }
         }
     }
 }
+
 
 
 public function getProductById($id) {
@@ -139,6 +174,5 @@ public function del_product($id) {
             $result = $this->db->select($sql);
             return $result;
         }
-        
 }
 ?>

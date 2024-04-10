@@ -2,10 +2,12 @@
 $filepath = realpath(dirname(__FILE__));
 include_once($filepath . "/../lib/database.php");
 include_once($filepath . "/../helpers/format.php");
+include_once($filepath . "/../lib/session.php");
+Session::init(); 
+
+
 ?>
-<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+
 <?php
 class User{
    private $db;
@@ -15,101 +17,67 @@ class User{
       $this->db = new Database();   
       $this->fm = new Format();   
    }
-   public function insert_product($data,$file) {
-    $productName = mysqli_real_escape_string($this->db->link, $data['productName']);
-    $category = mysqli_real_escape_string($this->db->link, $data['category']);
-    $brand = mysqli_real_escape_string($this->db->link, $data['brand']);
-    $product_desc = mysqli_real_escape_string($this->db->link, $data['product_desc']);
-    $price = mysqli_real_escape_string($this->db->link, $data['price']);
-    $type = mysqli_real_escape_string($this->db->link, $data['type']);
+   public function insertUser($data){
+    $username = mysqli_real_escape_string($this->db->link, $data['username']);
+    $address = mysqli_real_escape_string($this->db->link, $data['address']);
+    $username = mysqli_real_escape_string($this->db->link, $data['username']);
+    $phone = mysqli_real_escape_string($this->db->link, $data['phone']);
+    $password = mysqli_real_escape_string($this->db->link, md5($data['password']));
 
-    $permited = array('jpg', 'jpeg', 'png', 'gif');
-    $file_name = $_FILES['image']['name'];
-    $file_size = $_FILES['image']['size'];
-    $file_temp = $_FILES['image']['tmp_name'];
-    $div = explode('.', $file_name);
-    $file_ext = strtolower(end($div));
-    $unique_image = substr(md5(time()), 0, 10) . '.' . $file_ext;
-    $uploaded_image = "uploads/" . $unique_image;
-    
-
-    if(empty($productName) || empty($brand) || empty($category) || empty($product_desc) || empty($price) || empty($type) || 
-    empty($file_name)) {
-      $alert = "<script>toastr.error('Fields  must not be empty');</script>";
-      return $alert;
-  } else {
-      move_uploaded_file($file_temp, $uploaded_image);
-      $query = "INSERT INTO tbl_product(productName, brandId, catId, product_desc, price, type, image) VALUES ('$productName', 
-      '$brand', '$category', '$product_desc', '$price', '$type', '$unique_image')";
-      $result = $this->db->insert($query);
-      if($result) {
-          $alert = "<script>toastr.success('Insert Product Successfully');</script>";
-          return $alert;
-      } else {
-          $alert = "<script>toastr.error('Insert Product Not Success');</script>";
-          return $alert;
-      }
-  }
+    if($username == "" ||  $password == "" || $username == "" || $address == "" || $phone == ""){
+        $arlet = "<span class='label label-danger'>Không được để trống !!</span>";
+        return $arlet;
+    } else {
+        $check_username = "SELECT * FROM tbl_users WHERE Username = '$username'";
+        $result = $this->db->select($check_username);
+        if($result){
+            $arlet = "<span class='label label-danger'>Tên đăng nhập đã tồn tại !!</span>";
+            return $arlet;
+        } else {
+            $query="INSERT INTO `tbl_users`(Username, Address, username, Phone, Password)
+                    VALUES ('$username', '$address', '$username', '$phone', '$password')";
+            $result = $this->db->insert($query);
+            if($result != false){
+                $arlet = "<span class='label label-success'>Đăng ký thành công !!</span>";
+                // Chuyển hướng người dùng sau khi đăng ký thành công
+                header("location: login.php");
+                exit(); // Kết thúc kịch bản sau khi chuyển hướng
+            } else {
+                $arlet = "Lỗi ";
+                return $arlet;
+            }
+        }
+    }
 }
+public function loginUser($data) {
+    $username = mysqli_real_escape_string($this->db->link, $data['username']);
+    $password = mysqli_real_escape_string($this->db->link, md5($data['password']));
     
-public function getProducts() {
-    $sql = "SELECT p.*, c.catName, b.brandName
-    FROM tbl_product p
-    INNER JOIN tbl_category c ON p.catId = c.catId
-    INNER JOIN tbl_brand b ON p.brandId = b.brandId
-    " ;
-    $result = $this->db->select($sql);
-    return $result;
-}
-
-public function update_product($productName, $categoryId, $brandId, $productDesc, $type, $price, $id) {
-    // Validate and sanitize input data
-    $productName = $this->fm->validation($productName);
-    $productName = mysqli_real_escape_string($this->db->link, $productName);
-    $categoryId = mysqli_real_escape_string($this->db->link, $categoryId);
-    $brandId = mysqli_real_escape_string($this->db->link, $brandId);
-    $productDesc = $this->fm->validation($productDesc);
-    $productDesc = mysqli_real_escape_string($this->db->link, $productDesc);
-    $type = mysqli_real_escape_string($this->db->link, $type);
-    $price = mysqli_real_escape_string($this->db->link, $price);
-    $id = mysqli_real_escape_string($this->db->link, $id);
-
-    // Check if productName is empty
-    if(empty($productName)) {
-        $alert = "<script>toastr.error('Product name must not be empty');</script>";
+    if ($username == '' || $password == '') {
+        $alert = "<span class='error'>Password and username must not be empty</span>";
         return $alert;
     } else {
-        // Update the product in the database
-        $query = "UPDATE tbl_product SET productName = '$productName', catId = '$categoryId', brandId = '$brandId', product_desc = '$productDesc', type = '$type', price = '$price' WHERE productId = '$id'";
-        $result = $this->db->update($query);
-        if($result) {
-            $alert = "<script>toastr.success('Product Updated Successfully', '', { onHidden: function() { window.location = 'productlist.php'; } });</script>";
-            return $alert;
+        $check_login = "SELECT * FROM tbl_users WHERE username = '$username' AND password = '$password'";
+        $result_check = $this->db->select($check_login);
+        
+        if ($result_check) {
+            $value = $result_check->fetch_assoc();
+            Session::set('user_login', true);
+            Session::set('user_id', $value['id']);
+            Session::set('user_name', $value['name']);
+            header('Location: index.php');
+            exit(); 
         } else {
-            $alert = "<script>toastr.error('Product Update Not Successful');</script>";
+            $alert = "<span class='error'>Username or Password doesn't match</span>";
             return $alert;
         }
     }
 }
-
-
-public function getProductById($id) {
-    $query = "SELECT * FROM tbl_product WHERE productId = '$id'";
-    $result = $this->db->select($query);
+public function getAllUser($id) {
+    $query = "SELECT * FROM tbl_users WHERE id = '$id'";
+    $result=$this->db->select($query);
     return $result;
-}
 
-
-public function del_product($id) {
-    $query = "DELETE FROM tbl_product WHERE productId = '$id'";
-    $result = $this->db->delete($query);
-    if($result) {
-        $alert = "<script>toastr.success('Product Deleted Successfully');</script>";
-        return $alert;
-    } else {
-        $alert = "<script>toastr.error('Product Deletion Not Successful');</script>";
-        return $alert;
-    }
 }
 }
 ?>

@@ -1,7 +1,4 @@
 <?php
-/**
-*Session Class
-**/
 class Session{
  public static function init(){
   if (version_compare(phpversion(), '5.4.0', '<')) {
@@ -46,5 +43,9 @@ class Session{
   session_destroy();
   header("Location:login.php");
  }
+ public static function exists($key) {
+   self::init();
+   return isset($_SESSION[$key]);
+}
 }
 ?>

@@ -1,5 +1,5 @@
 <?php
-    include "../classes/adminlogin.php"
+    include_once "../classes/adminlogin.php"
 
 ?>
 <?php

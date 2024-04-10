@@ -25,11 +25,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $type = $_POST['type'];
     $price = $_POST['price'];
     $quantity = $_POST['quantity'];
+    $image = $_FILES['image'];
 
-    
-    // Gọi phương thức update_product từ đối tượng $product để cập nhật sản phẩm
-    $updateProduct = $product->update_product($productName, $categoryId, $brandId, $productDesc, $type, $price, $id,$quantity);
+    $updateProduct = $product->update_product($productName, $categoryId, $brandId, $productDesc, $type, $price, $id, $quantity, $image);
 }
+
 
 ?>
 <link rel="stylesheet" href="../admin/css/style.css">
@@ -147,6 +147,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 placeholder="Nhập số lượng sản phẩm..." class="medium" />
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            <label>Hình ảnh:</label>
+                        </td>
+                        <td>
+                            <input type="file" name="image" accept="image/*" />
+                        </td>
+                    </tr>
+
                     <tr>
                         <td>
                             <input type="submit" name="submit" Value="Cập nhật" />

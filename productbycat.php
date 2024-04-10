@@ -1,78 +1,71 @@
 <?php
-	include 'inc/header.php';
-	include 'inc/slider.php';
+include 'inc/header.php';
+include 'inc/slider.php';
+
+if (isset($_GET['catid']) && $_GET['catid'] != NULL) {
+    $id = $_GET['catid'];
+} else {
+    echo "<script>window.location = '404.php';</script>";
+}
 ?>
 
-<div class="main">
-    <div class="content">
-        <div class="content_top">
-            <div class="heading">
-                <h3>Latest from Iphone</h3>
+<section class="py-5">
+    <?php
+                $category_name = $cat->get_category_name($id);
+                if ($category_name) {
+                    $result_name = $category_name->fetch_assoc(); 
+                    ?>
+    <h2>Category : <?php echo $result_name['catName']; ?></h2>
+    <?php
+                } 
+                ?>
+
+    <div class="container px-4 px-lg-5 mt-5">
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            <?php
+            $category = $cat->get_product_by_cat($id);
+            if ($category) {
+                while ($result = $category->fetch_assoc()) {
+            ?>
+
+            <div class="col-3 mb-5">
+                <div class="card h-100">
+                    <!-- Product image -->
+                    <a href="details.php?productid=<?php echo $result['productId']; ?>"><img
+                            style="height: 150px; width:150px " src="admin/uploads/<?php echo $result['image']; ?>"
+                            alt="" />
+                    </a>
+                    <!-- Product details -->
+                    <div class="card-body p-4">
+                        <div class="text-center">
+                            <!-- Product name -->
+                            <h5 class="fw-bolder"><?php echo $result['productName']; ?></h5>
+                            <p><?php echo $fm->textShorten($result['product_desc'], 300) ?></p>
+
+                            <!-- Product price -->
+                            <p><span class="price">$<?php echo $result['price']; ?></span></p>
+                        </div>
+                    </div>
+                    <!-- Product actions -->
+                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                        <div class="text-center">
+                            <a class="btn btn-outline-dark mt-auto"
+                                href="details.php?productid=<?php echo $result['productId']; ?>">Details</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="clear"></div>
+            <?php
+                }
+            } else {
+                echo "<div class='main'><p>No products found in this category.</p></div>";
+            }
+            ?>
+
         </div>
-        <div class="section group">
-            <div class="grid_1_of_4 images_1_of_4">
-                <a href="preview-3.php"><img src="assets/images/feature-pic1.png" alt="" /></a>
-                <h2>Lorem Ipsum is simply </h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit</p>
-                <p><span class="price">$505.22</span></p>
-                <div class="button"><span><a href="details.php" class="details">Details</a></span></div>
-            </div>
-            <div class="grid_1_of_4 images_1_of_4">
-                <a href="preview-2.php"><img src="assets/images/feature-pic2.jpg" alt="" /></a>
-                <h2>Lorem Ipsum is simply </h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit</p>
-                <p><span class="price">$620.87</span></p>
-                <div class="button"><span><a href="details.php" class="details">Details</a></span></div>
-            </div>
-            <div class="grid_1_of_4 images_1_of_4">
-                <a href="preview-4.php"><img src="assets/images/feature-pic3.jpg" alt="" /></a>
-                <h2>Lorem Ipsum is simply </h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit</p>
-                <p><span class="price">$220.97</span></p>
-                <div class="button"><span><a href="details.php" class="details">Details</a></span></div>
-            </div>
-            <div class="grid_1_of_4 images_1_of_4">
-                <img src="assets/images/feature-pic4.png" alt="" />
-                <h2>Lorem Ipsum is simply </h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit</p>
-                <p><span class="price">$415.54</span></p>
-                <div class="button"><span><a href="details.php" class="details">Details</a></span></div>
-            </div>
-
-
-            <div class="grid_1_of_4 images_1_of_4" style="margin-left:0">
-                <a href="preview-3.php"><img src="assets/images/new-pic1.jpg" alt="" /></a>
-                <h2>Lorem Ipsum is simply </h2>
-                <p><span class="price">$403.66</span></p>
-
-                <div class="button"><span><a href="details.php" class="details">Details</a></span></div>
-            </div>
-            <div class="grid_1_of_4 images_1_of_4">
-                <a href="preview-4.php"><img src="assets/images/new-pic2.jpg" alt="" /></a>
-                <h2>Lorem Ipsum is simply </h2>
-                <p><span class="price">$621.75</span></p>
-                <div class="button"><span><a href="details.php" class="details">Details</a></span></div>
-            </div>
-            <div class="grid_1_of_4 images_1_of_4">
-                <a href="preview-2.php"><img src="assets/images/feature-pic2.jpg" alt="" /></a>
-                <h2>Lorem Ipsum is simply </h2>
-                <p><span class="price">$428.02</span></p>
-                <div class="button"><span><a href="details.php" class="details">Details</a></span></div>
-            </div>
-            <div class="grid_1_of_4 images_1_of_4">
-                <img src="assets/images/new-pic3.jpg" alt="" />
-                <h2>Lorem Ipsum is simply </h2>
-                <p><span class="price">$457.88</span></p>
-                <div class="button"><span><a href="details.php" class="details">Details</a></span></div>
-            </div>
-        </div>
-
-
-
     </div>
-</div>
+</section>
+
 <?php
-	include 'inc/footer.php';
+include 'inc/footer.php';
 ?>

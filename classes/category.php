@@ -77,6 +77,16 @@ public function del_category($id) {
        return $alert;
    }
 }
+public function get_product_by_cat($id) {
+   $query = "SELECT * FROM tbl_product WHERE catId = '$id' ORDER BY catId DESC LIMIT 8";
+   $result = $this->db->select($query);
+   return $result;
+}
+public function get_category_name($id) {
+   $query = "SELECT tbl_product.*, tbl_category.catName, tbl_category.catId FROM tbl_product, tbl_category WHERE tbl_product.catId = tbl_category.catId AND tbl_product.catId = '$id'";
+   $result = $this->db->select($query);
+   return $result;
+}
 
 }
 ?>
