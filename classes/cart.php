@@ -4,7 +4,9 @@
     include_once  ($filepath.'/../helpers/format.php');
     ob_start();
 ?>
-
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
 <?php
 Class Cart{
     
@@ -27,39 +29,53 @@ Class Cart{
         // Lấy userId từ session hoặc một nguồn khác phù hợp
         $userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
     
-        $query = "SELECT * FROM tbl_product WHERE productId = '$id' ";
-        $result = $this->db->select($query);
+        // Lấy thông tin sản phẩm từ bảng tbl_product
+        $query_product = "SELECT * FROM tbl_product WHERE productId = '$id' ";
+        $result_product = $this->db->select($query_product);
     
-        if ($result) {
-            $row = $result->fetch_assoc();
-            $image = $row['image'];
-            $price = $row['price'];
-            $productName = $row['productName'];
+        if ($result_product) {
+            $row_product = $result_product->fetch_assoc();
+            $stock = $row_product['quantity'];
+            $productName = $row_product['productName'];
+            $image = $row_product['image'];
+            $price = $row_product['price'];
     
-            $check_cart = "SELECT * FROM tbl_cart 
-                           WHERE productId = '$id' AND sid = '$sId' AND userId = '$userId'";
-            $resultcheck = $this->db->select($check_cart);
+            // Kiểm tra xem số lượng trong kho có đủ để thêm vào giỏ hàng không
+            if ($stock >= $quantity) {
+                // Số lượng đủ, tiếp tục thêm sản phẩm vào giỏ hàng
+                $query_cart = "SELECT * FROM tbl_cart WHERE productId = '$id' AND sid = '$sId' AND userId = '$userId'";
+                $result_cart = $this->db->select($query_cart);
     
-            if ($resultcheck) {
-                $query = "UPDATE tbl_cart SET quantity = quantity + $quantity WHERE productId = '$id' AND sid = '$sId' AND userId = '$userId'";
-                $this->db->update($query);
-                $alert = "Sản phẩm đã được thêm vào giỏ hàng";
-                return $alert;
-            } else {
-                $query_insert = "INSERT INTO tbl_cart (productId, sid, productName, price, quantity, image, userId) 
-                                 VALUES ('$id', '$sId', '$productName', '$price', '$quantity', '$image', '$userId')";
-                $insert_cart = $this->db->insert($query_insert);
-                if ($insert_cart) {
-                    header('location: cart.php');
-                    exit();
+                if ($result_cart) {
+                    // Sản phẩm đã tồn tại trong giỏ hàng, cập nhật số lượng
+                    $query_update = "UPDATE tbl_cart SET quantity = quantity + $quantity WHERE productId = '$id' AND sid = '$sId' AND userId = '$userId'";
+                    $this->db->update($query_update);
+                    $alert = "Sản phẩm đã được thêm vào giỏ hàng";
+                    return $alert;
                 } else {
-                    header('location: 404.php');
+                    // Thêm sản phẩm mới vào giỏ hàng
+                    $query_insert = "INSERT INTO tbl_cart (productId, sid, productName, price, quantity, image, userId) 
+                                     VALUES ('$id', '$sId', '$productName', '$price', '$quantity', '$image', '$userId')";
+                    $insert_cart = $this->db->insert($query_insert);
+                    if ($insert_cart) {
+                        header('location: cart.php');
+                        exit();
+                    } else {
+                        header('location: 404.php');
+                    }
                 }
+            } else {
+                $alert = "<script>alert('Số lượng không đủ');</script>";
+                return $alert;
             }
         } else {
             header('location: 404.php');
         }
     }
+    
+    
+    
+    
     
      public function getProductCart(){
         $userId = Session::get('user_id');
@@ -67,19 +83,64 @@ Class Cart{
         $result=$this->db->select($query);
         return $result;
     }
+    
     public function updatequantityCart($quantity, $cartid) {
         $quantity = mysqli_real_escape_string($this->db->link, $quantity);
         $cartid = mysqli_real_escape_string($this->db->link, $cartid);
-        $query = "UPDATE tbl_cart SET quantity ='$quantity' WHERE cartId = '$cartid' ";
-        $result = $this->db->update($query);
-        if ($result) {
-            header('location: cart.php');
-            exit();
+    
+        // Lấy thông tin sản phẩm từ giỏ hàng
+        $query_cart = "SELECT * FROM tbl_cart WHERE cartId = '$cartid'";
+        $result_cart = $this->db->select($query_cart);
+    
+        if ($result_cart) {
+            $row_cart = $result_cart->fetch_assoc();
+            $productId = $row_cart['productId'];
+            $sId = $row_cart['sId'];
+            $userId = $row_cart['userId'];
+    
+            // Lấy thông tin sản phẩm từ bảng tbl_product
+            $query_product = "SELECT * FROM tbl_product WHERE productId = '$productId'";
+            $result_product = $this->db->select($query_product);
+    
+            if ($result_product) {
+                $row_product = $result_product->fetch_assoc();
+                $stock = $row_product['quantity'];
+    
+                // Lấy tổng số lượng sản phẩm trong giỏ hàng
+                $query_cart_quantity = "SELECT SUM(quantity) AS total_quantity FROM tbl_cart WHERE productId = '$productId' AND sid = '$sId' AND userId = '$userId'";
+                $result_cart_quantity = $this->db->select($query_cart_quantity);
+                $row_cart_quantity = $result_cart_quantity->fetch_assoc();
+                $cart_quantity = $row_cart_quantity['total_quantity'];
+    
+                // Tính toán số lượng mới sau khi cập nhật
+                $total_quantity = $cart_quantity - $row_cart['quantity'] + $quantity;
+    
+                // Kiểm tra xem có đủ số lượng sản phẩm để cập nhật không
+                if ($total_quantity <= $stock) {
+                    $query_update = "UPDATE tbl_cart SET quantity ='$quantity' WHERE cartId = '$cartid'";
+                    $result_update = $this->db->update($query_update);
+                    if ($result_update) {
+                        header('location: cart.php');
+                        exit();
+                    } else {
+                        $alert = "Lỗi";
+                        return $alert;
+                    }
+                } else {
+                    // Số lượng không đủ, in ra thông báo
+                    $alert = "<script>alert('Số lượng không đủ');</script>";
+                    return $alert;
+                }
+            } else {
+                // Không tìm thấy thông tin sản phẩm
+                header('location: 404.php');
+            }
         } else {
-            $alert = "Lỗi";
-            return $alert;
+            // Không tìm thấy thông tin giỏ hàng
+            header('location: 404.php');
         }
     }
+    
     public function deleteProCart($cartid) {
         $cartid = mysqli_real_escape_string($this->db->link, $cartid);
         $query = "DELETE FROM tbl_cart WHERE cartId = '$cartid' ";
@@ -182,6 +243,29 @@ Class Cart{
             return $alert;
         }
     }
+    public function handleOrderSuccess() {
+        $userId = Session::get('user_id');
+    
+        // Lấy thông tin các sản phẩm đã được đặt từ bảng tbl_order
+        $query = "SELECT productId, quantity FROM tbl_order WHERE userId = '$userId'";
+        $result = $this->db->select($query);
+    
+        if ($result) {
+            while ($row = $result->fetch_assoc()) {
+                $productId = $row['productId'];
+                $quantityOrdered = $row['quantity'];
+    
+                // Cập nhật số lượng sản phẩm trong bảng tbl_product
+                $query_update = "UPDATE tbl_product SET quantity = quantity - $quantityOrdered WHERE productId = '$productId'";
+                $this->db->update($query_update);
+            }
+    
+            // Xóa đơn hàng đã được xử lý từ bảng tbl_order
+            $query_delete = "DELETE FROM tbl_order WHERE userId = '$userId'";
+            $this->db->delete($query_delete);
+        }
+    }
+    
     
 }
 

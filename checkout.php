@@ -3,15 +3,16 @@ include 'inc/header.php';
 
 ?>
 <?php
-//   $login_check= Session::exists('user_login');
-//    if($login_check==false){
-// 	header('location: login.php');}?>
+  $login_check= Session::exists('user_login');
+   if($login_check==false){
+	header('location: login.php');}?>
 <?php
- if(isset($_GET['orderid']) &&$_GET['orderid']=='order'  ){
-    $customerId = Session::get('customer_id');
-    $insertOrder = $ct->insertOder( $customerId);
+ if(isset($_GET['id']) &&$_GET['id']=='order'  ){
+    $userId = Session::get('user_id');
+    $insertOrder = $ct->insertOder( $userId);
     //neu da thanh toan thi xoa gio hang
     $delCart=$ct->delAllCart();
+    $ct->handleOrderSuccess();
     header('location: success.php');
   }
   ?>
@@ -19,7 +20,7 @@ include 'inc/header.php';
   if($_SERVER['REQUEST_METHOD']==='POST'&& isset($_POST['submit'])){
    $checkmethodpayment = $_POST['payment'];
 	if( $checkmethodpayment == 'cash'){
-      header('location: ?orderid=order');
+      header('location: ?id=order');
    }else{
       header('location: congthanhtoan.php');
    }
@@ -141,9 +142,8 @@ include 'inc/header.php';
                      }?>
                             <div class="verified-icon">
 
-                                <!-- <input name="submit" type="submit" class="btn btn-submit btn-solid-border pull-right" value="Thanh toán"></input> -->
+
                                 <a href="cart.php" class="btn btn-submit btn-solid-border">Quay về giỏ hàng</a>
-                                <!-- <a href="?orderid=order" class="btn btn-submit btn-solid-border pull-right" >Thanh toán </a> -->
 
 
                             </div>

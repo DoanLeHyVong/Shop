@@ -1,6 +1,11 @@
 <?php
 include_once 'inc/header.php';
 
+  $login_check= Session::exists('user_login');
+   if($login_check==false){
+	header('location: login.php');}?>
+<?php
+
 if(!isset($_GET['productid']) || $_GET['productid'] == null){
     echo "<script>window.location = '404.php'</script>";
 } else {

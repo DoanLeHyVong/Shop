@@ -25,9 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $type = $_POST['type'];
     $price = $_POST['price'];
     $quantity = $_POST['quantity'];
-    $image = $_FILES['image'];
 
-    $updateProduct = $product->update_product($productName, $categoryId, $brandId, $productDesc, $type, $price, $id, $quantity, $image);
+    $updateProduct = $product->update_product($productName, $categoryId, $brandId, $productDesc, $type, $price, $id, $quantity);
 }
 
 
@@ -145,14 +144,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <td>
                             <input type="text" value="<?php echo $result['quantity'] ?>" name="quantity"
                                 placeholder="Nhập số lượng sản phẩm..." class="medium" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Hình ảnh:</label>
-                        </td>
-                        <td>
-                            <input type="file" name="image" accept="image/*" />
                         </td>
                     </tr>
 

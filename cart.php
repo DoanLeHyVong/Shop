@@ -1,6 +1,11 @@
 <?php
 include_once 'inc/header.php';
 
+  $login_check= Session::exists('user_login');
+   if($login_check==false){
+	header('location: login.php');}
+    ?>
+<?php
 if(isset($_GET['cartId'])){
     $delId = $_GET['cartId'];
     $delCart = $ct->deleteProCart($delId);
