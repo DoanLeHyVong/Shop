@@ -79,5 +79,26 @@ public function getAllUser($id) {
     return $result;
 
 }
+public function updateUser($id,$data){
+    $email = mysqli_real_escape_string($this->db->link,$data['email']);
+    $username = mysqli_real_escape_string($this->db->link,$data['username']);
+    $address = mysqli_real_escape_string($this->db->link,$data['address']);
+    $phone = mysqli_real_escape_string($this->db->link,$data['phone']);
+    if($username=="" || $email=="" ||$address=="" ||$phone=="" ){
+        $arlet = "Không được để trống !!";
+        return $arlet;
+}else{
+    $query=" UPDATE  `tbl_users` SET username='$username',address='$address',phone='$phone',email='$email' WHERE id = $id";
+                            
+        $result = $this->db->update($query);
+        if($result!=false){
+            $arlet = "<span class='label label-success'>Cập nhật thành công !!</span>";
+            return $arlet;
+         }else{
+        $arlet = "Lỗi !!";
+            return $arlet;
+    }
+}
+}
 }
 ?>

@@ -4,6 +4,7 @@
     Session::init();    
     include_once("lib/database.php");
     include_once("helpers/format.php");
+    
 ?>
 
 <?php
@@ -116,27 +117,28 @@ header("Cache-Control: max-age=2592000");
                         ?>
                     </div>
                 </li>
+                <?php
+                    $login_check = Session::get('user_login');
+                    if($login_check == true){
+                        echo '<li><a href="profile.php">Thông tin tài khoản</a></li>';
+                    }
+                ?>
+
             </ul>
 
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li class="nav-item dropdown">
                     <?php 
-            $login_check = Session::get('user_login');
-            if($login_check == false){
-                echo '<a class="nav-link" href="login.php">Login</a>';
-            } else {
-                echo '<a class="nav-link" href="?action=logout">Logout</a>';
-            }
-        ?>
+                        $login_check = Session::get('user_login');
+                        if($login_check == false){
+                            echo '<a class="nav-link" href="login.php">Login</a>';
+                        } else {
+                            echo '<a class="nav-link" href="?action=logout">Logout</a>';
+
+                        }
+                    ?>
                 </li>
             </ul>
-
-
-
-
-
-
-            <!-- Cart button -->
             <form style="margin-bottom: 0" class="d-flex">
                 <?php 
                     $getcart = $ct->getProductCart();
