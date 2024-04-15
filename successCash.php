@@ -2,40 +2,6 @@
 include 'inc/header.php';
 ?>
 <?php
-
-if ($_GET['resultCode'] == 0) {
-    $partnerCode = $_GET['partnerCode'];
-    $orderId = $_GET['orderId'];
-    $requestId = $_GET['requestId'];
-    $amount = $_GET['amount'];
-    $orderInfo = $_GET['orderInfo'];
-    $orderType = $_GET['orderType'];
-    $transId = $_GET['transId'];
-    $resultCode = $_GET['resultCode'];
-    $message = $_GET['message'];
-    $payType = $_GET['payType'];
-    $responseTime = $_GET['responseTime'];
-    $paymentOption = $_GET['paymentOption'];
-
-    $data = [
-        'orderId' => $orderId,
-        'requestId' => $requestId,
-        'amount' => $amount,
-        'orderInfo' => $orderInfo,
-        'orderType' => $orderType,
-        'transId' => $transId,
-        'resultCode' => $resultCode,
-        'message' => $message,
-        'payType' => $payType,
-        'responseTime' => $responseTime,
-        'paymentOption' => $paymentOption
-    ];
-
-    $handleMomo = $ct->handleMomo($data);
-}
-
-?>
-<?php
 $login_check= Session::get('user_login');
 if ($login_check == false) {
   header('location: 404.php');

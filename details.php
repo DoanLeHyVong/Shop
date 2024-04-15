@@ -1,7 +1,7 @@
 <?php
 include_once 'inc/header.php';
 
-  $login_check= Session::exists('user_login');
+  $login_check= Session::get('user_login');
    if($login_check==false){
 	header('location: login.php');}?>
 <?php
@@ -47,12 +47,12 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])){
                     <p>
                         <?php echo $fm->textShorten($result['product_desc'], 200)?>
                     </p>
-
+                    </br>
                     <div class="row">
-                        <dt class="col-3">Category</dt>
+                        <dt class="col-3">Category: </dt>
                         <dd class="col-9"><?php echo $result['catName']?></dd>
 
-                        <dt class="col-3">Brand</dt>
+                        <dt class="col-3">Brand: </dt>
                         <dd class="col-9"><?php echo $result['brandName']?></dd>
                     </div>
 

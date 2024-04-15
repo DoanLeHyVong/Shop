@@ -3,29 +3,26 @@ include 'inc/header.php';
 
 ?>
 <?php
-  $login_check= Session::exists('user_login');
+  $login_check= Session::get('user_login');
    if($login_check==false){
 	header('location: login.php');}?>
 <?php
- if(isset($_GET['id']) &&$_GET['id']=='order'  ){
-    $userId = Session::get('user_id');
-    $insertOrder = $ct->insertOder( $userId);
-    //neu da thanh toan thi xoa gio hang
-    $delCart=$ct->delAllCart();
-    $ct->handleOrderSuccess();
-    header('location: success.php');
-  }
-  ?>
-<?php
-  if($_SERVER['REQUEST_METHOD']==='POST'&& isset($_POST['submit'])){
-   $checkmethodpayment = $_POST['payment'];
-	if( $checkmethodpayment == 'cash'){
-      header('location: ?id=order');
-   }else{
-      header('location: congthanhtoan.php');
-   }
-   }
-  ?>
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+    $checkmethodpayment = $_POST['payment'];
+    if ($checkmethodpayment == 'cash') {
+        $userId = Session::get('user_id');
+        $insertOrder = $ct->insertOder($userId);
+        if ($insertOrder) {
+            echo "Có lỗi xảy ra khi lưu đơn hàng";
+        } else {
+            $delCart = $ct->delAllCart();
+            header('location: successCash.php');
+        }
+    } else {
+        header('location: congthanhtoan.php');
+    }
+}
+?>
 
 <div class="page-wrapper">
     <div class="checkout shopping">

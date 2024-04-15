@@ -23,7 +23,6 @@ class Product{
     $price = mysqli_real_escape_string($this->db->link, $data['price']);
     $type = mysqli_real_escape_string($this->db->link, $data['type']);
     $quantity = mysqli_real_escape_string($this->db->link, $data['quantity']);
-
     $permited = array('jpg', 'jpeg', 'png', 'gif');
     $file_name = $_FILES['image']['name'];
     $file_size = $_FILES['image']['size'];
@@ -31,7 +30,7 @@ class Product{
     $div = explode('.', $file_name);
     $file_ext = strtolower(end($div));
     $unique_image = substr(md5(time()), 0, 10) . '.' . $file_ext;
-    $uploaded_image = "admin/uploads/" . $unique_image;
+    $uploaded_image = "uploads/" . $unique_image;
     
 // ai lai xu li $type the nay. empty no nhan 0 la rong tra ve true dung roi
     if(empty($productName) || empty($brand) || empty($category) || empty($product_desc) || empty($price) || 
@@ -55,6 +54,7 @@ class Product{
         }
     }
 }
+
     
 public function getProducts() {
     $sql = "SELECT p.*, c.catName, b.brandName

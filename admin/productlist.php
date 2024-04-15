@@ -58,9 +58,9 @@ if(isset($_GET['delid'])) {
                         <td><?php echo $fm->textShorten($result['product_desc'], 50); ?></td>
                         <td><?php echo ($result['type'] == 0) ? 'Feathered' : 'Non-Feathered'; ?></td>
                         <td><?php echo $result['price']; ?></td>
+                        <td><?php echo $result['quantity']; ?></td>
                         <td class="image-cell"><img src="uploads/<?php echo $result['image'] ?>" width="200"
                                 height="200"></td>
-                        <td><?php echo $result['quantity']; ?></td>
                         <td class="action-links">
                             <a href="productedit.php?productid=<?php echo $result['productId']; ?>">Edit</a> ||
                             <a onclick="return confirm('Are you sure you want to delete?')"

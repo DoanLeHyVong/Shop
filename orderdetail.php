@@ -66,31 +66,33 @@ include 'inc/header.php';
                                             <?php $total= $result['price'] * $result['quantity']; echo $fm->format_currency($total)." "."VNĐ"?>
                                         </td>
                                         <td class="" name="status"><?php
-                      if($result['status']==0){
-                        echo '<span class="label label-warning">Đang xử lý</span>';
-                      }elseif($result['status']=='1'){?>
+                                            if($result['status']==0){
+                                                echo '<span class="label label-warning">Đang xử lý</span>';
+                                            }elseif($result['status']=='1'){?>
                                             <span class="label label-primary">Đang vận chuyển</span>
                                             <?php }else{
-                         echo '<span class="label label-success">Hoàn thành</span>';
-                      }
-                      ?>
+                                                echo '<span class="label label-success">Hoàn thành</span>';
+                                            }
+                                            ?>
                                         </td>
                                         <td class="">
                                             <?php 
-                      echo date('H:i d/m/Y',strtotime($result['dateOrder']));
-                      ?>
+                                            echo date('H:i d/m/Y',strtotime($result['dateOrder']));
+                                            ?>
                                         </td>
                                         <?php
-                     if($result['status']==0 ){?>
-                                        <?php }elseif($result['status']=='1' ){?>
-                                        <td><a
-                                                href="?confirmId=<?php echo $id?>&price=<?php echo $result['price']?>&time=<?php echo $result['dateOrder'] ?>"><span
-                                                    class="label label-info">Đã nhận hàng</span></a></td>
-                                        <?php }else{?>
-                                        <td>
-                                            <span class="label label-info">OK</span>
-                                        </td>
-                                        <?php }?>
+                                            if($result['status'] == 0) {
+                                                // Trạng thái hiện tại là 0
+                                            } elseif($result['status'] == '1') {
+                                                // Trạng thái hiện tại là 1
+                                                // Hiển thị liên kết "Đã nhận hàng"
+                                                echo '<td><a href="?confirmId='.$id.'&price='.$result['price'].'&time='.$result['dateOrder'].'"><span class="label label-info">Đã nhận hàng</span></a></td>';
+                                            } else {
+                                                // Trạng thái hiện tại là gì đó khác
+                                                echo '<td><span class="label label-info">OK</span></td>';
+                                            }
+                                            ?>
+
                                     </tr>
 
                                     <?php

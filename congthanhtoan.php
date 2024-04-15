@@ -2,7 +2,10 @@
 <?php
 include 'inc/header.php';
 ?>
+
+
 <?php
+
 function execPostRequest($url, $data)
 {
     $ch = curl_init($url);
@@ -42,7 +45,7 @@ if($getcart){
     }}
     $amount = $totalCart;
 $orderId = time() ."";
-$redirectUrl = "http://localhost/DAMH/success.php";
+$redirectUrl = "http://localhost/ElectronicsStore/success.php";
 $ipnUrl = "https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b";
 $extraData = "";
 

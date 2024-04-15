@@ -265,6 +265,23 @@ Class Cart{
             $this->db->delete($query_delete);
         }
     }
+
+    public function handleMomo($data){
+        $orderId = mysqli_real_escape_string($this->db->link, $data['orderId']);
+        $requestId = mysqli_real_escape_string($this->db->link, $data['requestId']);
+        $amount = mysqli_real_escape_string($this->db->link, $data['amount']);
+        $orderInfo = mysqli_real_escape_string($this->db->link, $data['orderInfo']);
+        $orderType = mysqli_real_escape_string($this->db->link, $data['orderType']);
+        $transId = mysqli_real_escape_string($this->db->link, $data['transId']);
+        $resultCode = mysqli_real_escape_string($this->db->link, $data['resultCode']);
+        $message = mysqli_real_escape_string($this->db->link, $data['message']);
+        $payType = mysqli_real_escape_string($this->db->link, $data['payType']);
+        $responseTime = mysqli_real_escape_string($this->db->link, $data['responseTime']);
+        $paymentOption = mysqli_real_escape_string($this->db->link, $data['paymentOption']);
+        $query = "INSERT INTO momo_response (orderId, requestId, amount, orderInfo, orderType, transId, resultCode,message,payType,responseTime,paymentOption) 
+                    VALUES ('$orderId', '$requestId', '$amount', '$orderInfo', '$orderType', '$transId', '$resultCode','$message','$payType','$responseTime','$paymentOption')";
+                $handleMomo = $this->db->insert($query);
+    }
     
     
 }
